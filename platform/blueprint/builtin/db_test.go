@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/boltdb/bolt"
-	"github.com/micromdm/micromdm/platform/blueprint"
-	profile "github.com/micromdm/micromdm/platform/profile/builtin"
-	user "github.com/micromdm/micromdm/platform/user/builtin"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
+	profile "github.com/vishnuvaradaraj/micromdm/platform/profile/builtin"
+	user "github.com/vishnuvaradaraj/micromdm/platform/user/builtin"
 )
 
 func TestSave(t *testing.T) {

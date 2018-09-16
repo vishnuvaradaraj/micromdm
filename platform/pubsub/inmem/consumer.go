@@ -3,7 +3,7 @@ package inmem
 import (
 	"context"
 
-	"github.com/micromdm/micromdm/platform/pubsub"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 )
 
 func (p *Inmem) Subscribe(_ context.Context, name, topic string) (<-chan pubsub.Event, error) {

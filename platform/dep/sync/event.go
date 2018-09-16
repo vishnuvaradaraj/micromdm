@@ -6,8 +6,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/micromdm/micromdm/dep"
-	"github.com/micromdm/micromdm/platform/dep/sync/internal/depsyncproto"
+	"github.com/vishnuvaradaraj/micromdm/dep"
+	"github.com/vishnuvaradaraj/micromdm/platform/dep/sync/internal/depsyncproto"
 )
 
 type Event struct {

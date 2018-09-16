@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/micromdm/micromdm/mdm"
-	"github.com/micromdm/micromdm/platform/dep/sync"
-	"github.com/micromdm/micromdm/platform/pubsub"
+	"github.com/vishnuvaradaraj/micromdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/platform/dep/sync"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 )
 
 type DeviceWorkerStore interface {

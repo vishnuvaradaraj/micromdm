@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/micromdm/micromdm/mdm/mdm"
-	"github.com/micromdm/micromdm/platform/command/internal/commandproto"
+	"github.com/vishnuvaradaraj/micromdm/mdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/platform/command/internal/commandproto"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 )

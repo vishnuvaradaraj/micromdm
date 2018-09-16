@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/groob/plist"
-	"github.com/micromdm/micromdm/pkg/httputil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/httputil"
 	"github.com/pkg/errors"
 )
 

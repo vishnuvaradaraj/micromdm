@@ -7,10 +7,10 @@ import (
 
 	"github.com/fullsailor/pkcs7"
 	"github.com/go-kit/kit/endpoint"
-	boltdepot "github.com/micromdm/scep/depot/bolt"
+	boltdepot "github.com/vishnuvaradaraj/scep/depot/bolt"
 
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
 )
 
 type Endpoints struct {
@@ -131,7 +131,7 @@ func MakeOTAPhase2Phase3Endpoint(s Service, scepDepot *boltdepot.Depot) endpoint
 			// point: we have a device identity that we can encrypt to that
 			// device's private key that it can decrypt
 			// TODO: the SCEP CA checking ought to be more robust
-			// see: https://github.com/micromdm/scep/issues/32
+			// see: https://github.com/vishnuvaradaraj/scep/issues/32
 
 			mc, err := s.Enroll(ctx)
 			// profile, err := s.OTAPhase3(ctx)

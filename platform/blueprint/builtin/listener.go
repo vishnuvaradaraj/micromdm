@@ -6,13 +6,13 @@ import (
 
 	"github.com/pkg/errors"
 
-	mdmsvc "github.com/micromdm/micromdm/mdm"
-	"github.com/micromdm/micromdm/mdm/mdm"
-	"github.com/micromdm/micromdm/platform/blueprint"
-	"github.com/micromdm/micromdm/platform/command"
-	"github.com/micromdm/micromdm/platform/device"
-	"github.com/micromdm/micromdm/platform/profile"
-	"github.com/micromdm/micromdm/platform/pubsub"
+	mdmsvc "github.com/vishnuvaradaraj/micromdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/mdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
+	"github.com/vishnuvaradaraj/micromdm/platform/command"
+	"github.com/vishnuvaradaraj/micromdm/platform/device"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 )
 
 func (db *DB) ApplyToDevice(ctx context.Context, svc command.Service, bp *blueprint.Blueprint, udid string) error {
@@ -135,9 +135,9 @@ func (db *DB) StartListener(sub pubsub.Subscriber, cmdSvc command.Service) error
 				// TODO: See notes from here:
 				// https://github.com/jessepeterson/micromdm/blob/8b068ac98d06954bb3e08b1557c193007932552b/blueprint/listener.go#L73-L103
 				// Also see discussion here for general direction:
-				// https://github.com/micromdm/micromdm/pull/149
+				// https://github.com/vishnuvaradaraj/micromdm/pull/149
 				// Finally see discussion here for high-level goals:
-				// https://github.com/micromdm/micromdm/issues/110
+				// https://github.com/vishnuvaradaraj/micromdm/issues/110
 			}
 
 		}

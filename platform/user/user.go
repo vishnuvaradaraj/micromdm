@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/micromdm/micromdm/platform/user/internal/userproto"
+	"github.com/vishnuvaradaraj/micromdm/platform/user/internal/userproto"
 )
 
 type User struct {

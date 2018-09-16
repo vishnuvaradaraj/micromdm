@@ -16,8 +16,8 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/pkcs12"
 
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/pkg/crypto/mdmcertutil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto/mdmcertutil"
 )
 
 type mdmcertCommand struct {

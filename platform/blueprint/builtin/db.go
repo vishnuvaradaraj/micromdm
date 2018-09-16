@@ -7,9 +7,9 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/platform/blueprint"
-	"github.com/micromdm/micromdm/platform/profile"
-	"github.com/micromdm/micromdm/platform/user"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/platform/user"
 )
 
 const (

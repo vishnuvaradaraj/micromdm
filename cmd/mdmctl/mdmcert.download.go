@@ -16,8 +16,8 @@ import (
 
 	"github.com/fullsailor/pkcs7"
 	"github.com/go-kit/kit/log"
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/pkg/crypto/mdmcertutil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto/mdmcertutil"
 	"github.com/pkg/errors"
 )
 

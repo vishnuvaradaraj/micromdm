@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/micromdm/micromdm/mdm/mdm/internal/mdmproto"
+	"github.com/vishnuvaradaraj/micromdm/mdm/mdm/internal/mdmproto"
 )
 
 func MarshalCommandPayload(cmd *CommandPayload) ([]byte, error) {

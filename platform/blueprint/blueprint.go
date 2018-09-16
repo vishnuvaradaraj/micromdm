@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/micromdm/micromdm/platform/blueprint/internal/blueprintproto"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint/internal/blueprintproto"
 )
 
 // ApplyAt is a case-insensitive string that specifies at which point the

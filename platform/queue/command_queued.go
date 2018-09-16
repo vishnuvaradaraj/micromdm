@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/micromdm/micromdm/platform/queue/internal/commandqueuedproto"
+	"github.com/vishnuvaradaraj/micromdm/platform/queue/internal/commandqueuedproto"
 )
 
 type QueueCommandQueued struct {

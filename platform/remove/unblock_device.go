@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/gorilla/mux"
-	"github.com/micromdm/micromdm/pkg/httputil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/httputil"
 )
 
 func (svc *RemoveService) UnblockDevice(ctx context.Context, udid string) error {

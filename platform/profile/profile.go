@@ -7,7 +7,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/groob/plist"
 
-	"github.com/micromdm/micromdm/platform/profile/internal/profileproto"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile/internal/profileproto"
 )
 
 type Mobileconfig []byte

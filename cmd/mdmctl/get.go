@@ -15,10 +15,10 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/platform/blueprint"
-	"github.com/micromdm/micromdm/platform/device"
-	"github.com/micromdm/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
+	"github.com/vishnuvaradaraj/micromdm/platform/device"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
 )
 
 type getCommand struct {

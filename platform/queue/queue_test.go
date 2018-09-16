@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/boltdb/bolt"
-	"github.com/micromdm/micromdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/mdm"
 )
 
 func TestNext_Error(t *testing.T) {

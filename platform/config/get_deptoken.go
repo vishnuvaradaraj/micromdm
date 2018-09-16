@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/micromdm/micromdm/pkg/httputil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/httputil"
 )
 
 func (svc *ConfigService) GetDEPTokens(ctx context.Context) ([]DEPToken, []byte, error) {

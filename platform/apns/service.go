@@ -13,9 +13,9 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/net/http2"
 
-	"github.com/micromdm/micromdm/platform/config"
-	"github.com/micromdm/micromdm/platform/pubsub"
-	"github.com/micromdm/micromdm/platform/queue"
+	"github.com/vishnuvaradaraj/micromdm/platform/config"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
+	"github.com/vishnuvaradaraj/micromdm/platform/queue"
 )
 
 type Service interface {

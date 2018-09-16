@@ -58,7 +58,7 @@ export MICROMDM_ENV_PATH="$(pwd)/env"
 The server will run on port `8080`. The default configuration is minimal, but you can pass any additional flags as arguments to the script. For example `./tools/ngrok/start_server -http-debug`.
 
 5. Configure the Push certificate and DEP tokens. This is a first time setup only step.
-If you already have the `MDM CSR` option in your enterprise portal, follow [these steps](https://github.com/micromdm/micromdm/wiki/Generating-MicroMDM-MDM-Certificates#generating-micromdm-mdm-certificates). If you don't, you can get a free MDM certificate from [mdmcert.download](https://github.com/micromdm/micromdm/wiki/mdmcert.download) or export the device management certificate from profile manager.
+If you already have the `MDM CSR` option in your enterprise portal, follow [these steps](https://github.com/vishnuvaradaraj/micromdm/wiki/Generating-MicroMDM-MDM-Certificates#generating-micromdm-mdm-certificates). If you don't, you can get a free MDM certificate from [mdmcert.download](https://github.com/vishnuvaradaraj/micromdm/wiki/mdmcert.download) or export the device management certificate from profile manager.
 
 Configure `mdmdctl`:
 

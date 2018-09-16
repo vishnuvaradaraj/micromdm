@@ -4,15 +4,15 @@ import (
 	"github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
 
-	"github.com/micromdm/micromdm/platform/appstore"
-	"github.com/micromdm/micromdm/platform/blueprint"
-	"github.com/micromdm/micromdm/platform/config"
-	"github.com/micromdm/micromdm/platform/dep"
-	"github.com/micromdm/micromdm/platform/dep/sync"
-	"github.com/micromdm/micromdm/platform/device"
-	"github.com/micromdm/micromdm/platform/profile"
-	"github.com/micromdm/micromdm/platform/remove"
-	"github.com/micromdm/micromdm/platform/user"
+	"github.com/vishnuvaradaraj/micromdm/platform/appstore"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
+	"github.com/vishnuvaradaraj/micromdm/platform/config"
+	"github.com/vishnuvaradaraj/micromdm/platform/dep"
+	"github.com/vishnuvaradaraj/micromdm/platform/dep/sync"
+	"github.com/vishnuvaradaraj/micromdm/platform/device"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/platform/remove"
+	"github.com/vishnuvaradaraj/micromdm/platform/user"
 )
 
 type remoteServices struct {

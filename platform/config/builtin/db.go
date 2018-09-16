@@ -10,9 +10,9 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/platform/config"
-	"github.com/micromdm/micromdm/platform/pubsub"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/platform/config"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 )
 
 const (

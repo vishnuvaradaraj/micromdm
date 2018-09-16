@@ -7,7 +7,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/micromdm/micromdm/platform/user"
+	"github.com/vishnuvaradaraj/micromdm/platform/user"
 	"github.com/pkg/errors"
 )
 

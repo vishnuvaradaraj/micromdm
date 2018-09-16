@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/boltdb/bolt"
-	"github.com/micromdm/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
 	"github.com/pkg/errors"
 )
 

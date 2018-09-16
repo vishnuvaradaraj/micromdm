@@ -13,7 +13,7 @@ import (
 
 	"github.com/fullsailor/pkcs7"
 	"github.com/go-kit/kit/endpoint"
-	"github.com/micromdm/micromdm/pkg/httputil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/httputil"
 )
 
 func (svc *ConfigService) ApplyDEPToken(ctx context.Context, P7MContent []byte) error {

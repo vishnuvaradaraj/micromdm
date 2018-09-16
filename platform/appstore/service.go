@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	"github.com/micromdm/micromdm/mdm/appmanifest"
+	"github.com/vishnuvaradaraj/micromdm/mdm/appmanifest"
 )
 
 type Service interface {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/micromdm/micromdm/mdm"
-	"github.com/micromdm/micromdm/platform/pubsub"
+	"github.com/vishnuvaradaraj/micromdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 	"github.com/pkg/errors"
 )
 

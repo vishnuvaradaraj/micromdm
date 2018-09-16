@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/fullsailor/pkcs7"
-	"github.com/micromdm/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
 )
 
 // immitate an Mdm-Signature header

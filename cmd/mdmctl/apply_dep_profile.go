@@ -12,9 +12,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/dep"
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/platform/dep/sync"
+	"github.com/vishnuvaradaraj/micromdm/dep"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/platform/dep/sync"
 )
 
 func certificatesFromURL(serverURL string, insecure bool) ([]*x509.Certificate, error) {

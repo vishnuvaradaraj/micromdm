@@ -13,7 +13,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/pkg/httputil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/httputil"
 )
 
 func (svc *PushService) Push(ctx context.Context, deviceUDID string) (string, error) {
@@ -34,7 +34,7 @@ func (svc *PushService) Push(ctx context.Context, deviceUDID string) (string, er
 	result, err := svc.pushsvc.Push(info.Token, nil, jsonPayload)
 	if err != nil && strings.HasSuffix(err.Error(), "remote error: tls: internal error") {
 		// TODO: yuck, error substring searching. see:
-		// https://github.com/micromdm/micromdm/issues/150
+		// https://github.com/vishnuvaradaraj/micromdm/issues/150
 		return result, errors.Wrap(err, "push error: possibly expired or invalid APNs certificate")
 	}
 	return result, err

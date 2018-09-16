@@ -11,7 +11,7 @@ import (
 	"github.com/go-kit/kit/endpoint"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/pkg/httputil"
+	"github.com/vishnuvaradaraj/micromdm/pkg/httputil"
 )
 
 func (svc *AppService) UploadApp(ctx context.Context, manifestName string, manifest io.Reader, pkgName string, pkg io.Reader) error {

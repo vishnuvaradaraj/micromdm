@@ -1,10 +1,10 @@
-## [v1.5.0](https://github.com/micromdm/micromdm/compare/v1.4.0...master) (Unreleased)
+## [v1.5.0](https://github.com/vishnuvaradaraj/micromdm/compare/v1.4.0...master) (Unreleased)
 
 * Refactor certificate verification and implement UDID-cert authentication (#358, #429)
 * Cleanup DEP library and integrate into main project (#504, #505)
 * Add API endpoint to retrieve APNS certificate (#503)
 
-## [v1.4.0](https://github.com/micromdm/micromdm/compare/v1.3.1...v1.4.0) September 6 2018
+## [v1.4.0](https://github.com/vishnuvaradaraj/micromdm/compare/v1.3.1...v1.4.0) September 6 2018
 
 ### Stability Improvements
 
@@ -23,7 +23,7 @@
 
 Thanks to our contributors for this release: @erikng, @gerardkok, @knightsc, @marpaia, and @ochimo!
 
-## [v1.3.1](https://github.com/micromdm/micromdm/compare/v1.3.0...v1.3.1) July 10 2018
+## [v1.3.1](https://github.com/vishnuvaradaraj/micromdm/compare/v1.3.0...v1.3.1) July 10 2018
 
 * Update base container to Alpine 3.7 (#437)
 * Fix bugs in SCEP enrollment (#451)
@@ -31,7 +31,7 @@ Thanks to our contributors for this release: @erikng, @gerardkok, @knightsc, @ma
 * Add device_information and security_info commands with curl API (#448)
 * Add support for InstallEnterpriseApplication command (#452)
 
-## [v1.3.0](https://github.com/micromdm/micromdm/compare/v1.2.0...v1.3.0) 
+## [v1.3.0](https://github.com/vishnuvaradaraj/micromdm/compare/v1.2.0...v1.3.0) 
 
 ### Auto-assigner
 
@@ -63,7 +63,7 @@ Thanks to our contributors for this release: @erikng, @gerardkok, @knightsc, @ma
 * Added support for supplied `depsim` URL. #318
 * Added Dockerfile. #316
 
-## [v1.2.0](https://github.com/micromdm/micromdm/compare/v1.1.0...v1.2.0) October 31 2017
+## [v1.2.0](https://github.com/vishnuvaradaraj/micromdm/compare/v1.1.0...v1.2.0) October 31 2017
 
 ### User Profiles
 
@@ -76,7 +76,7 @@ Thanks to our contributors for this release: @erikng, @gerardkok, @knightsc, @ma
 * Added ENV variables for sensitive flags: `MICROMDM_APNS_KEY_PASSWORD`,`MICROMDM_API_KEY`
 * Removed the `-redir-addr` flag. Redirect to HTTPS is only enabled when the 443 port is used.
 
-## [v1.1.0](https://github.com/micromdm/micromdm/compare/v1.0.0...v1.1.0) June 05 2017
+## [v1.1.0](https://github.com/vishnuvaradaraj/micromdm/compare/v1.0.0...v1.1.0) June 05 2017
 
 ### YVR!
 

@@ -6,7 +6,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/platform/dep/sync"
+	"github.com/vishnuvaradaraj/micromdm/platform/dep/sync"
 )
 
 const (

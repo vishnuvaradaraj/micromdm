@@ -1,7 +1,7 @@
 package mdm
 
 import (
-	"github.com/micromdm/micromdm/mdm/appmanifest"
+	"github.com/vishnuvaradaraj/micromdm/mdm/appmanifest"
 	uuid "github.com/satori/go.uuid"
 )
 

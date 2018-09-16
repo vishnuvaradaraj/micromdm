@@ -8,10 +8,10 @@ Welcome! If you're looking to help, this document is a great place to start!
 Here's a few places to get started and find out what's outstanding.
 
 - Read through the [MDM Protocol Reference](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/MobileDeviceManagementProtocolRef/3-MDM_Protocol/MDM_Protocol.html) on the Apple website. Having a deeper understanding of MDM can help with designing features and uncovering bugs.
-- Follow the [Quickstart](https://github.com/micromdm/micromdm/wiki/Quickstart) guide and make edits if something doesn't look or work right.
-- If you run into a problem that you're not sure how to fix, file a bug in [the issue tracker](https://github.com/micromdm/micromdm/issues)
-- Browse through the open issues in [the issue tracker](https://github.com/micromdm/micromdm/issues). We try to tag issues as [**beginner friendly**](https://github.com/micromdm/micromdm/issues?q=is%3Aissue+is%3Aopen+label%3Abeginner-friendly) where appropriate.
-- See something that others might benefit from? Considering updating or writing a [wiki page](https://github.com/micromdm/micromdm/wiki).
+- Follow the [Quickstart](https://github.com/vishnuvaradaraj/micromdm/wiki/Quickstart) guide and make edits if something doesn't look or work right.
+- If you run into a problem that you're not sure how to fix, file a bug in [the issue tracker](https://github.com/vishnuvaradaraj/micromdm/issues)
+- Browse through the open issues in [the issue tracker](https://github.com/vishnuvaradaraj/micromdm/issues). We try to tag issues as [**beginner friendly**](https://github.com/vishnuvaradaraj/micromdm/issues?q=is%3Aissue+is%3Aopen+label%3Abeginner-friendly) where appropriate.
+- See something that others might benefit from? Considering updating or writing a [wiki page](https://github.com/vishnuvaradaraj/micromdm/wiki).
 
 ## Building the project
 
@@ -64,4 +64,4 @@ MicroMDM is built using a few popular Go packages outside the standard libraries
 
 ## Other resources
 
-Also see [Contributing wiki page](https://github.com/micromdm/micromdm/wiki/Contributing) which has some additional notes on running, troubleshooting, and developing with MicroMDM.
+Also see [Contributing wiki page](https://github.com/vishnuvaradaraj/micromdm/wiki/Contributing) which has some additional notes on running, troubleshooting, and developing with MicroMDM.

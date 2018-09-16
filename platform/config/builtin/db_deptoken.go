@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 
 	"github.com/boltdb/bolt"
-	"github.com/micromdm/micromdm/pkg/crypto"
-	"github.com/micromdm/micromdm/platform/config"
+	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
+	"github.com/vishnuvaradaraj/micromdm/platform/config"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/platform/user"
+	"github.com/vishnuvaradaraj/micromdm/platform/user"
 )
 
 const (

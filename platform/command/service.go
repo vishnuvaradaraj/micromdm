@@ -2,8 +2,8 @@
 package command
 
 import (
-	"github.com/micromdm/micromdm/mdm/mdm"
-	"github.com/micromdm/micromdm/platform/pubsub"
+	"github.com/vishnuvaradaraj/micromdm/mdm/mdm"
+	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 	"golang.org/x/net/context"
 )
 

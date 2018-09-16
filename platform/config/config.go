@@ -4,7 +4,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/platform/config/internal/configproto"
+	"github.com/vishnuvaradaraj/micromdm/platform/config/internal/configproto"
 )
 
 const ConfigTopic = "mdm.ServerConfigUpdated"

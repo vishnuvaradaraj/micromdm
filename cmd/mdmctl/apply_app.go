@@ -18,7 +18,7 @@ import (
 	"github.com/groob/plist"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/mdm/appmanifest"
+	"github.com/vishnuvaradaraj/micromdm/mdm/appmanifest"
 )
 
 func (cmd *applyCommand) applyApp(args []string) error {

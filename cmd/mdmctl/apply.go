@@ -16,8 +16,8 @@ import (
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/micromdm/micromdm/platform/blueprint"
-	"github.com/micromdm/micromdm/platform/profile"
+	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
 )
 
 type applyCommand struct {

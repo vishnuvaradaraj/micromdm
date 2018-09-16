@@ -14,11 +14,11 @@ MicroMDM is able to solve this common use-case today, and we're focusing on impr
 
 MicroMDM is being actively developed but is **ready for you to start testing**.
 
-To get started, see the [Quickstart](https://github.com/micromdm/micromdm/wiki/Quickstart) tutorial on the wiki.
+To get started, see the [Quickstart](https://github.com/vishnuvaradaraj/micromdm/wiki/Quickstart) tutorial on the wiki.
 
 ## Installing
 
-Unless you're a developer, you probably want a binary you can run. [Download](https://github.com/micromdm/micromdm/releases/latest) the latest release, either for macOS (darwin) or linux.
+Unless you're a developer, you probably want a binary you can run. [Download](https://github.com/vishnuvaradaraj/micromdm/releases/latest) the latest release, either for macOS (darwin) or linux.
 
 ## Getting Help
 
@@ -26,14 +26,14 @@ The best place to get help is the `#micromdm` channel on the MacAdmins Slack tea
 
 ## Helping out
 
-Over the last year this project has gained a lot of interest from the community. We want to make it clear that at this point MicroMDM is a passion project, and is being developed by a [few fellow Mac Admins](https://github.com/micromdm/micromdm/graphs/contributors) on weekends and during conference hackathons.
+Over the last year this project has gained a lot of interest from the community. We want to make it clear that at this point MicroMDM is a passion project, and is being developed by a [few fellow Mac Admins](https://github.com/vishnuvaradaraj/micromdm/graphs/contributors) on weekends and during conference hackathons.
 
 It would be great to get a few more developers to contribute, but at this point, there are _more_ important tasks than knowing how to code. Here is how you can help:
 
 - Read the documentation, install the tool and test MicroMDM.
-- File bugs: https://github.com/micromdm/micromdm/issues
+- File bugs: https://github.com/vishnuvaradaraj/micromdm/issues
 - Participate in discussions. The `#micromdm` slack channel is best, but `#mdm` and `#dep` are a few relevant ones.
-- Edit the [project Wiki](https://github.com/micromdm/micromdm/wiki). The wiki page is open to anyone and you can make a lot of impact on the project by submitting additional documentation or designing proposals.
+- Edit the [project Wiki](https://github.com/vishnuvaradaraj/micromdm/wiki). The wiki page is open to anyone and you can make a lot of impact on the project by submitting additional documentation or designing proposals.
 - Were you able to set up MicroMDM and enroll a few devices? Blogging about your experience. It can help others get started, or can help us figure out what we need to do better.
 
 See the [CONTRIBUTING](CONTRIBUTING.md) page for additional info.

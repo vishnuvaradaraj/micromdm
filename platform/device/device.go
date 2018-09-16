@@ -6,7 +6,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 
-	"github.com/micromdm/micromdm/platform/device/internal/deviceproto"
+	"github.com/vishnuvaradaraj/micromdm/platform/device/internal/deviceproto"
 )
 
 const DeviceEnrolledTopic = "mdm.DeviceEnrolled"

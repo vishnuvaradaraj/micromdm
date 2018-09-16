@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/micromdm/micromdm/mdm/internal/connectproto"
+	"github.com/vishnuvaradaraj/micromdm/mdm/internal/connectproto"
 )
 
 type AcknowledgeEvent struct {
