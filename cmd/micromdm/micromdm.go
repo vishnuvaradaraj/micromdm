@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"google.golang.org/api/iterator"
 	"math/rand"
 	"os"
 	"strings"
@@ -23,18 +24,41 @@ func init() {
 
 func main() {
 
+	ctx := context.Background()
+
 	// Use a service account
-	sa := option.WithCredentialsFile("/Users/vishnuv/go/src/github.com/vishnuvaradaraj/micromdm/parabay-family-8ac64c635ad9.json")
-	app, err := firebase.NewApp(context.Background(), nil, sa)
+	sa := option.WithCredentialsFile("/Users/vishnuv/go/src/github.com/vishnuvaradaraj/micromdm/tools/certs/family-protection-dd191-firebase-adminsdk-x7xrc-435ea7bf3a.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	client, err := app.Firestore(context.Background())
+	client, err := app.Firestore(ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer client.Close()
+
+	_, _, err = client.Collection("Devices").Add(ctx, map[string]interface{}{
+		"first": "Ada",
+		"last":  "Lovelace",
+		"born":  1815,
+	})
+	if err != nil {
+		log.Fatalf("Failed adding alovelace: %v", err)
+	}
+
+	iter := client.Collection("users").Documents(ctx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+		}
+		fmt.Println(doc.Data())
+	}
 
 	if len(os.Args) < 2 {
 		usage()
