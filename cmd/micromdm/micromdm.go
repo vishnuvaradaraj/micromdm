@@ -9,7 +9,12 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"golang.org/x/net/context"
+
+	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 	"github.com/micromdm/go4/version"
+	"log"
 )
 
 func init() {
@@ -17,6 +22,20 @@ func init() {
 }
 
 func main() {
+
+	// Use a service account
+	sa := option.WithCredentialsFile("/Users/vishnuv/go/src/github.com/vishnuvaradaraj/micromdm/parabay-family-8ac64c635ad9.json")
+	app, err := firebase.NewApp(context.Background(), nil, sa)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	client, err := app.Firestore(context.Background())
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer client.Close()
+
 	if len(os.Args) < 2 {
 		usage()
 		os.Exit(1)
