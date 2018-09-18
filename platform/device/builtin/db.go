@@ -1,7 +1,11 @@
 package builtin
 
 import (
+	"cloud.google.com/go/firestore"
 	"fmt"
+	"context"
+	"google.golang.org/api/iterator"
+	"log"
 
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
@@ -19,11 +23,161 @@ const (
 	// The udidCertAuthBucket stores a simple mapping from UDID to
 	// sha256 hash of the device identity certificate for future validation
 	udidCertAuthBucket = "mdm.UDIDCertAuth"
+
 )
 
 type DB struct {
 	*bolt.DB
 }
+
+type FireDB struct {
+	*firestore.Client
+}
+
+func NewFireDB(db *firestore.Client) (*FireDB, error) {
+	datastore := &FireDB{Client: db}
+	return datastore, nil
+}
+
+func (db *FireDB) Save(dev *device.Device) error {
+
+	ctx := context.Background()
+
+	/*
+	devproto, err := device.MarshalDevice(dev)
+	if err != nil {
+		return errors.Wrap(err, "marshalling device")
+	}
+
+	_, _, err = db.Collection(DeviceBucket).Add(ctx, map[string]interface{}{
+		"key": dev.UDID,
+		"value":  []byte(devproto),
+	})
+	*/
+
+	_, err := db.Collection(DeviceBucket).Doc(dev.UDID).Set(ctx, dev)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *FireDB) List(opt device.ListDevicesOption) ([]device.Device, error) {
+	var devices []device.Device
+
+	ctx := context.Background()
+
+	iter := db.Collection("users").Documents(ctx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+		}
+
+		var dev device.Device
+		doc.DataTo(&dev)
+
+		/*
+		fmt.Println(doc.Data())
+
+		v, _  := doc.DataAtPath([]string{"value"})
+
+		var dev device.Device
+		if err := device.UnmarshalDevice(v.([]byte), &dev); err != nil {
+			break
+		}
+		*/
+
+		if len(opt.FilterSerial) == 0 {
+			devices = append(devices, dev)
+			break
+		}
+		for _, fs := range opt.FilterSerial {
+			if fs == dev.SerialNumber {
+				devices = append(devices, dev)
+			}
+		}
+
+	}
+
+	return devices, nil
+}
+
+func (db *FireDB) DeleteByUDID(udid string) error {
+	return db.deleteByIndex(udid)
+}
+
+func (db *FireDB) DeleteBySerial(serial string) error {
+	return db.deleteByIndex(serial)
+}
+
+func (db *FireDB) deleteByIndex(key string) error {
+
+	return nil
+}
+
+func (db *FireDB) DeviceByUDID(udid string) (*device.Device, error) {
+
+	var dev device.Device
+
+	ctx := context.Background()
+
+	query := db.Collection(DeviceBucket).Where("UDID", "==", udid).Limit(1).Documents(ctx)
+	docs, err := query.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	if (len(docs)>0) {
+
+		doc := docs[0]
+		doc.DataTo(&dev)
+	}
+	return &dev, nil
+}
+
+func (db *FireDB) DeviceBySerial(serial string) (*device.Device, error) {
+
+	var dev device.Device
+
+	ctx := context.Background()
+
+	query := db.Collection(DeviceBucket).Where("SerialNumber", "==", serial).Limit(1).Documents(ctx)
+	docs, err := query.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	if (len(docs)>0) {
+
+		doc := docs[0]
+		doc.DataTo(&dev)
+	}
+	return &dev, nil
+}
+
+func (db *FireDB) deviceByIndex(key string) (*device.Device, error) {
+	var dev device.Device
+
+	return &dev, nil
+}
+
+func (db *FireDB) SaveUDIDCertHash(udid, certHash []byte) error {
+
+	return nil
+}
+
+func (db *FireDB) GetUDIDCertHash(udid []byte) ([]byte, error) {
+	var certHash []byte
+
+	return certHash, nil
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 func NewDB(db *bolt.DB) (*DB, error) {
 	err := db.Update(func(tx *bolt.Tx) error {

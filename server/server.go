@@ -2,11 +2,14 @@ package server
 
 import (
 	"bytes"
+	"cloud.google.com/go/firestore"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/pem"
+	"firebase.google.com/go"
 	"fmt"
+	"google.golang.org/api/option"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -17,9 +20,9 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/pkg/errors"
 	boltdepot "github.com/vishnuvaradaraj/scep/depot/bolt"
 	scep "github.com/vishnuvaradaraj/scep/server"
-	"github.com/pkg/errors"
 	"golang.org/x/crypto/pkcs12"
 
 	"github.com/vishnuvaradaraj/micromdm/dep"
@@ -43,6 +46,7 @@ import (
 	block "github.com/vishnuvaradaraj/micromdm/platform/remove"
 	blockbuiltin "github.com/vishnuvaradaraj/micromdm/platform/remove/builtin"
 	"github.com/vishnuvaradaraj/micromdm/workflow/webhook"
+
 )
 
 type Server struct {
@@ -74,6 +78,8 @@ type Server struct {
 	ConfigService   config.Service
 
 	WebhooksHTTPClient *http.Client
+
+	FireDB		*firestore.Client
 }
 
 func (c *Server) Setup(logger log.Logger) error {
@@ -82,6 +88,10 @@ func (c *Server) Setup(logger log.Logger) error {
 	}
 
 	if err := c.setupBolt(); err != nil {
+		return err
+	}
+
+	if err := c.setupFirebase(); err != nil {
 		return err
 	}
 
@@ -128,6 +138,7 @@ func (c *Server) Setup(logger log.Logger) error {
 	if err := c.setupEnrollmentService(); err != nil {
 		return err
 	}
+
 
 	return nil
 }
@@ -209,6 +220,24 @@ func (c *Server) setupBolt() error {
 		return errors.Wrap(err, "opening boltdb")
 	}
 	c.DB = db
+
+	return nil
+}
+
+func (c *Server) setupFirebase() error {
+	ctx := context.Background()
+
+	// Use a service account
+	sa := option.WithCredentialsFile("dd191-firebase-adminsdk-x7xrc-435ea7bf3a.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
+	if err != nil {
+		return errors.Wrap(err, "opening firebase")
+	}
+
+	c.FireDB, err = app.Firestore(ctx)
+	if err != nil {
+		return errors.Wrap(err, "init firestore")
+	}
 
 	return nil
 }

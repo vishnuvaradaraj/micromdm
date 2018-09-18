@@ -1,7 +1,7 @@
 module github.com/vishnuvaradaraj/micromdm
 
 require (
-	cloud.google.com/go v0.27.0 // indirect
+	cloud.google.com/go v0.27.0
 	contrib.go.opencensus.io/exporter/stackdriver v0.6.0 // indirect
 	firebase.google.com/go v3.4.0+incompatible
 	github.com/RobotsAndPencils/buford v0.12.0
