@@ -2,14 +2,13 @@ package builtin
 
 import (
 	"cloud.google.com/go/firestore"
-	"fmt"
 	"context"
+	"fmt"
+	"github.com/pkg/errors"
 	"google.golang.org/api/iterator"
 	"log"
 
 	"github.com/boltdb/bolt"
-	"github.com/pkg/errors"
-
 	"github.com/vishnuvaradaraj/micromdm/platform/device"
 )
 
@@ -43,18 +42,6 @@ func (db *FireDB) Save(dev *device.Device) error {
 
 	ctx := context.Background()
 
-	/*
-	devproto, err := device.MarshalDevice(dev)
-	if err != nil {
-		return errors.Wrap(err, "marshalling device")
-	}
-
-	_, _, err = db.Collection(DeviceBucket).Add(ctx, map[string]interface{}{
-		"key": dev.UDID,
-		"value":  []byte(devproto),
-	})
-	*/
-
 	_, err := db.Collection(DeviceBucket).Doc(dev.UDID).Set(ctx, dev)
 	if err != nil {
 		return err
@@ -68,7 +55,7 @@ func (db *FireDB) List(opt device.ListDevicesOption) ([]device.Device, error) {
 
 	ctx := context.Background()
 
-	iter := db.Collection("users").Documents(ctx)
+	iter := db.Collection(DeviceBucket).Documents(ctx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -81,16 +68,6 @@ func (db *FireDB) List(opt device.ListDevicesOption) ([]device.Device, error) {
 		var dev device.Device
 		doc.DataTo(&dev)
 
-		/*
-		fmt.Println(doc.Data())
-
-		v, _  := doc.DataAtPath([]string{"value"})
-
-		var dev device.Device
-		if err := device.UnmarshalDevice(v.([]byte), &dev); err != nil {
-			break
-		}
-		*/
 
 		if len(opt.FilterSerial) == 0 {
 			devices = append(devices, dev)
@@ -101,52 +78,47 @@ func (db *FireDB) List(opt device.ListDevicesOption) ([]device.Device, error) {
 				devices = append(devices, dev)
 			}
 		}
-
 	}
 
 	return devices, nil
 }
 
 func (db *FireDB) DeleteByUDID(udid string) error {
-	return db.deleteByIndex(udid)
+
+	ctx := context.Background()
+	_, err := db.Collection(DeviceBucket).Doc(udid).Delete(ctx)
+	return err
 }
 
 func (db *FireDB) DeleteBySerial(serial string) error {
-	return db.deleteByIndex(serial)
-}
 
-func (db *FireDB) deleteByIndex(key string) error {
+	ctx := context.Background()
 
+	query := db.Collection(DeviceBucket).Where("SerialNumber", "==", serial).Limit(1)
+	doc, _ := db.docByQuery(query)
+	if (doc != nil) {
+		doc.Ref.Delete(ctx)
+	}
 	return nil
 }
 
 func (db *FireDB) DeviceByUDID(udid string) (*device.Device, error) {
 
-	var dev device.Device
-
-	ctx := context.Background()
-
-	query := db.Collection(DeviceBucket).Where("UDID", "==", udid).Limit(1).Documents(ctx)
-	docs, err := query.GetAll()
-	if err != nil {
-		return nil, err
-	}
-
-	if (len(docs)>0) {
-
-		doc := docs[0]
-		doc.DataTo(&dev)
-	}
-	return &dev, nil
+	query := db.Collection(DeviceBucket).Where("UDID", "==", udid).Limit(1)
+	return db.deviceByQuery(query)
 }
 
 func (db *FireDB) DeviceBySerial(serial string) (*device.Device, error) {
 
-	var dev device.Device
+	query := db.Collection(DeviceBucket).Where("SerialNumber", "==", serial).Limit(1)
+	return db.deviceByQuery(query)
+}
+
+func (db *FireDB) docByQuery(q firestore.Query) (*firestore.DocumentSnapshot, error) {
 
 	ctx := context.Background()
 
-	query := db.Collection(DeviceBucket).Where("SerialNumber", "==", serial).Limit(1).Documents(ctx)
+	query := q.Documents(ctx)
 	docs, err := query.GetAll()
 	if err != nil {
 		return nil, err
@@ -155,14 +127,22 @@ func (db *FireDB) DeviceBySerial(serial string) (*device.Device, error) {
 	if (len(docs)>0) {
 
 		doc := docs[0]
-		doc.DataTo(&dev)
+		return doc, nil
 	}
-	return &dev, nil
+
+	return nil, nil
 }
 
-func (db *FireDB) deviceByIndex(key string) (*device.Device, error) {
+func (db *FireDB) deviceByQuery(q firestore.Query) (*device.Device, error) {
+
 	var dev device.Device
 
+	doc, _ := db.docByQuery(q)
+	if (doc != nil) {
+		doc.DataTo(&dev)
+	} else {
+		return nil, &notFound{"Device", "Device not found"}
+	}
 	return &dev, nil
 }
 
@@ -176,6 +156,27 @@ func (db *FireDB) GetUDIDCertHash(udid []byte) ([]byte, error) {
 
 	return certHash, nil
 }
+
+
+/*
+
+
+func (db *FireDB) deleteByIndex(key string) error {
+
+	return nil
+}
+
+func (db *FireDB) SaveUDIDCertHash(udid, certHash []byte) error {
+
+	return nil
+}
+
+func (db *FireDB) GetUDIDCertHash(udid []byte) ([]byte, error) {
+	var certHash []byte
+
+	return certHash, nil
+}
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 
