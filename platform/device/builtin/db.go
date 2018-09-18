@@ -148,12 +148,30 @@ func (db *FireDB) deviceByQuery(q firestore.Query) (*device.Device, error) {
 
 func (db *FireDB) SaveUDIDCertHash(udid, certHash []byte) error {
 
-	return nil
+	ctx := context.Background()
+
+	key := string(udid[:])
+	_, err := db.Collection(udidCertAuthBucket).Doc(key).Set(ctx, map[string]interface{}{
+		"certHash":    certHash,
+	})
+
+	return err
 }
 
 func (db *FireDB) GetUDIDCertHash(udid []byte) ([]byte, error) {
 	var certHash []byte
 
+	ctx := context.Background()
+
+	key := string(udid[:])
+	doc, err := db.Collection(udidCertAuthBucket).Doc(key).Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	v, _  := doc.DataAtPath([]string{"certHash"})
+	certHash = v.([]byte)
+	
 	return certHash, nil
 }
 
