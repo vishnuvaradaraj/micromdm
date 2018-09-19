@@ -1,9 +1,13 @@
 package builtin
 
 import (
+	"firebase.google.com/go"
+	"google.golang.org/api/option"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"context"
 
 	"github.com/boltdb/bolt"
 	"github.com/vishnuvaradaraj/micromdm/platform/blueprint"
@@ -12,7 +16,7 @@ import (
 )
 
 func TestSave(t *testing.T) {
-	db := setupDB(t)
+	db := setupFireDB(t)
 	bp := &blueprint.Blueprint{}
 	bp.ApplyAt = []string{"Enroll"}
 
@@ -50,6 +54,7 @@ func TestSave(t *testing.T) {
 		t.Fatalf("saving blueprint2 in datastore: %s", err)
 	}
 
+	/*
 	byName, err := db.BlueprintByName("blueprint")
 	if err != nil {
 		t.Fatalf("getting blueprint by Name: %s", err)
@@ -57,7 +62,7 @@ func TestSave(t *testing.T) {
 	if byName == nil || byName.UUID != "a-b-c-d" {
 		t.Fatalf("have %s, want %s", byName.UUID, "a-b-c-d")
 	}
-
+	*/
 	byApplyAt, err := db.BlueprintsByApplyAt("Enroll")
 	if err != nil {
 		t.Fatalf("getting blueprint by ApplyAt: %s", err)
@@ -134,6 +139,37 @@ func setupDB(t *testing.T) *DB {
 		t.Fatalf("couldn't create user DB, err %s\n", err)
 	}
 	blueprintDB, err := NewDB(db, profileDB, userDB)
+	if err != nil {
+		t.Fatalf("couldn't create blueprint DB, err %s\n", err)
+	}
+	return blueprintDB
+}
+
+func setupFireDB(t *testing.T) *FireDB {
+
+	ctx := context.Background()
+
+	// Use a service account
+	sa := option.WithCredentialsFile("/Users/vishnuv/go/src/github.com/vishnuvaradaraj/micromdm/tools/certs/family-protection-dd191-firebase-adminsdk-x7xrc-435ea7bf3a.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
+	if err != nil {
+		t.Fatalf("couldn't open firebase, err %s\n", err)
+	}
+
+	fireDB, err := app.Firestore(ctx)
+	if err != nil {
+		t.Fatalf("couldn't init firebase, err %s\n", err)
+	}
+
+	profileDB, err := profile.NewFireDB(fireDB)
+	if err != nil {
+		t.Fatalf("couldn't create profile DB, err %s\n", err)
+	}
+	userDB, err := user.NewFireDB(fireDB)
+	if err != nil {
+		t.Fatalf("couldn't create user DB, err %s\n", err)
+	}
+	blueprintDB, err := NewFireDB(fireDB, profileDB, userDB)
 	if err != nil {
 		t.Fatalf("couldn't create blueprint DB, err %s\n", err)
 	}

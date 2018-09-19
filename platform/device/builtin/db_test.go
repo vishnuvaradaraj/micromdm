@@ -187,7 +187,7 @@ func setupFireDB(t *testing.T) *FireDB {
 	ctx := context.Background()
 
 	// Use a service account
-	sa := option.WithCredentialsFile("dd191-firebase-adminsdk-x7xrc-435ea7bf3a.json")
+	sa := option.WithCredentialsFile("/Users/vishnuv/go/src/github.com/vishnuvaradaraj/micromdm/tools/certs/family-protection-dd191-firebase-adminsdk-x7xrc-435ea7bf3a.json")
 	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {
 		t.Fatalf("couldn't open firebase, err %s\n", err)

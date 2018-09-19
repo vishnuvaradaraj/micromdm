@@ -2,15 +2,55 @@ package builtin
 
 import (
 	"fmt"
-
+	"context"
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
 
+	"cloud.google.com/go/firestore"
 	"github.com/vishnuvaradaraj/micromdm/platform/apns"
 	"github.com/vishnuvaradaraj/micromdm/platform/pubsub"
 )
 
 const PushBucket = "mdm.PushInfo"
+
+type FireDB struct {
+	*firestore.Client
+}
+
+func NewFireDB(db *firestore.Client) (*FireDB, error) {
+	datastore := &FireDB{Client: db}
+	return datastore, nil
+}
+
+func (db *FireDB) PushInfo(udid string) (*apns.PushInfo, error) {
+	var info apns.PushInfo
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(PushBucket).Doc(udid).Get(ctx)
+	if err != nil {
+		return nil, &notFound{"Pushinfo","Not found"}
+	}
+
+	err = doc.DataTo(&info)
+	if err != nil {
+		return nil, err
+	}
+	return &info, nil
+}
+
+func (db *FireDB) Save(info *apns.PushInfo) error {
+
+	ctx := context.Background()
+
+	_, err := db.Collection(PushBucket).Doc(info.UDID).Set(ctx, info)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+////////////////////////////////////////////////////////////
 
 type DB struct {
 	*bolt.DB

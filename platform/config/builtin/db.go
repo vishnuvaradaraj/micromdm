@@ -6,9 +6,10 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
+
+	"cloud.google.com/go/firestore"
 
 	"github.com/vishnuvaradaraj/micromdm/pkg/crypto"
 	"github.com/vishnuvaradaraj/micromdm/platform/config"
@@ -18,6 +19,113 @@ import (
 const (
 	ConfigBucket = "mdm.ServerConfig"
 )
+
+type FireDB struct {
+	*firestore.Client
+	Publisher pubsub.Publisher
+}
+
+func NewFireDB(db *firestore.Client, pub pubsub.Publisher) (*FireDB, error) {
+	datastore := &FireDB{Client: db, Publisher: pub}
+	return datastore, nil
+}
+
+func (db *FireDB) SavePushCertificate(cert, key []byte) error {
+
+	ctx := context.Background()
+
+	rec  := &config.ServerConfig{
+		PushCertificate: cert,
+		PrivateKey:      key,
+	}
+
+	_, err := db.Collection(ConfigBucket).Doc("config").Set(ctx, rec)
+	if err != nil {
+		return err
+	}
+
+	if err := db.Publisher.Publish(context.TODO(), config.ConfigTopic, []byte("updated")); err != nil {
+		return err
+	}
+	return err
+}
+
+func (db *FireDB) serverConfig() (*config.ServerConfig, error) {
+	var conf config.ServerConfig
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(ConfigBucket).Doc("config").Get(ctx)
+	if err != nil {
+		return nil, &notFound{"Config","Not found"}
+	}
+
+	err = doc.DataTo(&conf)
+	if err != nil {
+		return nil, err
+	}
+
+	return &conf, nil
+}
+
+func (db *FireDB) GetPushCertificate() ([]byte, error) {
+	cert, err := db.PushCertificate()
+	if err != nil {
+		return nil, err
+	}
+	if len(cert.Certificate) > 0 {
+		return cert.Certificate[0], nil
+	}
+	return nil, nil
+}
+
+func (db *FireDB) PushCertificate() (*tls.Certificate, error) {
+	conf, err := db.serverConfig()
+	if err != nil {
+		return nil, errors.Wrap(err, "get server config for push cert")
+	}
+
+	// load private key
+	pkeyBlock, _ := pem.Decode(conf.PrivateKey)
+	if pkeyBlock == nil {
+		return nil, errors.New("decode private key for push cert")
+	}
+
+	priv, err := x509.ParsePKCS1PrivateKey(pkeyBlock.Bytes)
+	if err != nil {
+		return nil, errors.Wrap(err, "parse push certificate key from server config")
+	}
+
+	// load certificate
+	certBlock, _ := pem.Decode(conf.PushCertificate)
+	if certBlock == nil {
+		return nil, errors.New("decode push certificate PEM")
+	}
+
+	pushCert, err := x509.ParseCertificate(certBlock.Bytes)
+	if err != nil {
+		return nil, errors.Wrap(err, "parse push certificate from server config")
+	}
+
+	cert := tls.Certificate{
+		Certificate: [][]byte{pushCert.Raw},
+		PrivateKey:  priv,
+		Leaf:        pushCert,
+	}
+	return &cert, nil
+}
+
+func (db *FireDB) PushTopic() (string, error) {
+	cert, err := db.PushCertificate()
+	if err != nil {
+		return "", errors.Wrap(err, "get push certificate for topic")
+	}
+	topic, err := crypto.TopicFromCert(cert.Leaf)
+	return topic, errors.Wrap(err, "get topic from push certificate")
+}
+
+
+///////////////////////////////////////////////////////////////////////
 
 // DB stores server configuration in BoltDB
 type DB struct {

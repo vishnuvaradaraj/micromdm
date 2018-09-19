@@ -2,15 +2,102 @@ package builtin
 
 import (
 	"fmt"
+	"context"
+	"google.golang.org/api/iterator"
+
+	"cloud.google.com/go/firestore"
 
 	"github.com/boltdb/bolt"
-	"github.com/vishnuvaradaraj/micromdm/platform/profile"
 	"github.com/pkg/errors"
+	"github.com/vishnuvaradaraj/micromdm/platform/profile"
 )
 
 const (
 	ProfileBucket = "mdm.Profile"
 )
+
+type FireDB struct {
+	*firestore.Client
+}
+
+func NewFireDB(db *firestore.Client) (*FireDB, error) {
+	datastore := &FireDB{Client: db}
+	return datastore, nil
+}
+
+func (db *FireDB) List() ([]profile.Profile, error) {
+
+	var list []profile.Profile
+
+	ctx := context.Background()
+
+	iter := db.Collection(ProfileBucket).Documents(ctx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		var p profile.Profile
+		doc.DataTo(&p)
+
+		list = append(list, p)
+	}
+
+	return list, nil
+}
+
+func (db *FireDB) Save(p *profile.Profile) error {
+	err := p.Validate()
+	if err != nil {
+		return err
+	}
+
+	ctx := context.Background()
+
+	_, err = db.Collection(ProfileBucket).Doc(p.Identifier).Set(ctx, p)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *FireDB) ProfileById(id string) (*profile.Profile, error) {
+	var p profile.Profile
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(ProfileBucket).Doc(id).Get(ctx)
+	if err != nil {
+		return nil, &notFound{"Profile","Not found"}
+	}
+
+	err = doc.DataTo(&p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
+}
+
+func (db *FireDB) Delete(id string) error {
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(ProfileBucket).Doc(id).Get(ctx)
+	if err != nil {
+		return &notFound{"Profile","Not found"}
+	}
+
+	_, err = doc.Ref.Delete(ctx)
+	return err
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 type DB struct {
 	*bolt.DB

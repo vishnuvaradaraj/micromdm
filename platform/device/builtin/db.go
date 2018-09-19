@@ -25,10 +25,6 @@ const (
 
 )
 
-type DB struct {
-	*bolt.DB
-}
-
 type FireDB struct {
 	*firestore.Client
 }
@@ -171,32 +167,17 @@ func (db *FireDB) GetUDIDCertHash(udid []byte) ([]byte, error) {
 
 	v, _  := doc.DataAtPath([]string{"certHash"})
 	certHash = v.([]byte)
-	
-	return certHash, nil
-}
-
-
-/*
-
-
-func (db *FireDB) deleteByIndex(key string) error {
-
-	return nil
-}
-
-func (db *FireDB) SaveUDIDCertHash(udid, certHash []byte) error {
-
-	return nil
-}
-
-func (db *FireDB) GetUDIDCertHash(udid []byte) ([]byte, error) {
-	var certHash []byte
 
 	return certHash, nil
 }
-*/
+
 
 //////////////////////////////////////////////////////////////////////////////
+
+
+type DB struct {
+	*bolt.DB
+}
 
 func NewDB(db *bolt.DB) (*DB, error) {
 	err := db.Update(func(tx *bolt.Tx) error {

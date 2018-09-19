@@ -1,13 +1,14 @@
 package builtin
 
 import (
+	"cloud.google.com/go/firestore"
+	"context"
 	"fmt"
-
 	"github.com/boltdb/bolt"
 	"github.com/go-kit/kit/log"
 	"github.com/pkg/errors"
-
 	"github.com/vishnuvaradaraj/micromdm/platform/user"
+	"google.golang.org/api/iterator"
 )
 
 const (
@@ -15,6 +16,149 @@ const (
 
 	userIndexBucket = "mdm.UserIdx"
 )
+
+type FireDB struct {
+	*firestore.Client
+}
+
+func NewFireDB(db *firestore.Client) (*FireDB, error) {
+	datastore := &FireDB{Client: db}
+	return datastore, nil
+}
+
+func (db *FireDB) List() ([]user.User, error) {
+	var users []user.User
+
+	ctx := context.Background()
+
+	iter := db.Collection(UserBucket).Documents(ctx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		var u user.User
+		doc.DataTo(&u)
+
+		users = append(users, u)
+	}
+
+	return users, nil
+}
+
+func (db *FireDB) Save(u *user.User) error {
+
+	ctx := context.Background()
+
+	_, err := db.Collection(UserBucket).Doc(u.UDID).Set(ctx, u)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *FireDB) User(uuid string) (*user.User, error) {
+
+	var u user.User
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(UserBucket).Doc(uuid).Get(ctx)
+	if err != nil {
+		return nil, &notFound{"User","Not found"}
+	}
+
+	err = doc.DataTo(&u)
+	if err != nil {
+		return nil, err
+	}
+
+	return &u, nil
+}
+
+func (db *FireDB) UserByUserID(userID string) (*user.User, error) {
+
+	var u user.User
+
+	ctx := context.Background()
+
+	q := db.Collection(UserBucket).Where("UserID", "==", userID).Limit(1)
+	query := q.Documents(ctx)
+	docs, err := query.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	if (len(docs)>0) {
+
+		var u user.User
+
+		doc := docs[0]
+		doc.DataTo(&u)
+
+	} else {
+		return nil, &notFound{"User","Not found"}
+	}
+
+	return &u, nil
+}
+
+func (db *FireDB) DeviceUsers(udid string) ([]user.User, error) {
+
+	var users []user.User
+
+	ctx := context.Background()
+
+	q := db.Collection(UserBucket).Where("UDID", "==", udid)
+	query := q.Documents(ctx)
+
+	docs, err := query.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	if (len(docs)>0) {
+
+		for i := 0; i < len(docs); i++ {
+			var u user.User
+
+			doc := docs[i]
+			doc.DataTo(&u)
+
+			users = append(users, u)
+		}
+
+	}
+
+	return users, nil
+}
+
+func (db *FireDB) DeleteDeviceUsers(udid string) error {
+
+	ctx := context.Background()
+
+	q := db.Collection(UserBucket).Where("UDID", "==", udid)
+	query := q.Documents(ctx)
+
+	docs, err := query.GetAll()
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(docs); i++ {
+		docs[i].Ref.Delete(ctx)
+	}
+
+	return nil
+}
+
+
+//////////////////////////////////////////////////////////////////////////
 
 type DB struct {
 	*bolt.DB
