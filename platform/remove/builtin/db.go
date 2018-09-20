@@ -2,13 +2,69 @@ package builtin
 
 import (
 	"fmt"
+	"context"
 
 	"github.com/boltdb/bolt"
 	"github.com/vishnuvaradaraj/micromdm/platform/remove"
 	"github.com/pkg/errors"
+	"cloud.google.com/go/firestore"
 )
 
 const RemoveBucket = "mdm.RemoveDevice"
+
+type FireDB struct {
+	*firestore.Client
+}
+
+func NewFireDB(db *firestore.Client) (*FireDB, error) {
+	datastore := &FireDB{Client: db}
+	return datastore, nil
+}
+
+func (db *FireDB) DeviceByUDID(udid string) (*remove.Device, error) {
+	var dev remove.Device
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(RemoveBucket).Doc(udid).Get(ctx)
+	if err != nil {
+		return nil, &notFound{"RemoveDevice","Not found"}
+	}
+
+	err = doc.DataTo(&dev)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dev, nil
+}
+
+func (db *FireDB) Save(dev *remove.Device) error {
+
+	ctx := context.Background()
+
+	_, err := db.Collection(RemoveBucket).Doc(dev.UDID).Set(ctx, dev)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *FireDB) Delete(udid string) error {
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(RemoveBucket).Doc(udid).Get(ctx)
+	if err != nil {
+		return &notFound{"RemoveDevice","Not found"}
+	}
+
+	_, err = doc.Ref.Delete(ctx)
+	return err
+}
+
+//////////////////////////////////////////////////////
 
 type DB struct {
 	*bolt.DB

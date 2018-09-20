@@ -8,6 +8,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/groob/plist"
 	"github.com/pkg/errors"
+	"cloud.google.com/go/firestore"
 
 	"github.com/vishnuvaradaraj/micromdm/mdm"
 	"github.com/vishnuvaradaraj/micromdm/platform/command"
@@ -19,6 +20,204 @@ const (
 
 	CommandQueuedTopic = "mdm.CommandQueued"
 )
+
+type FireDB struct {
+	*firestore.Client
+}
+
+func NewFireDB(db *firestore.Client) (*FireDB, error) {
+	datastore := &FireDB{Client: db}
+	return datastore, nil
+}
+
+func (db *FireDB) Next(ctx context.Context, resp mdm.Response) ([]byte, error) {
+	cmd, err := db.nextCommand(ctx, resp)
+	if err != nil {
+		return nil, err
+	}
+	if cmd == nil {
+		return nil, nil
+	}
+	return cmd.Payload, nil
+}
+
+func (db *FireDB) nextCommand(ctx context.Context, resp mdm.Response) (*Command, error) {
+	udid := resp.UDID
+	if resp.UserID != nil {
+		// use the user id for user level commands
+		udid = *resp.UserID
+	}
+	dc, err := db.DeviceCommand(udid)
+	if err != nil {
+		if isNotFound(err) {
+			return nil, nil
+		}
+		return nil, errors.Wrapf(err, "get device command from queue, udid: %s", resp.UDID)
+	}
+
+	var cmd *Command
+	switch resp.Status {
+	case "NotNow":
+		// We will try this command later when the device is not
+		// responding with NotNow
+		x, a := cut(dc.Commands, resp.CommandUUID)
+		dc.Commands = a
+		if x == nil {
+			break
+		}
+		dc.NotNow = append(dc.NotNow, *x)
+
+	case "Acknowledged":
+		// move to completed, send next
+		x, a := cut(dc.Commands, resp.CommandUUID)
+		dc.Commands = a
+		if x == nil {
+			break
+		}
+		dc.Completed = append(dc.Completed, *x)
+	case "Error":
+		// move to failed, send next
+		x, a := cut(dc.Commands, resp.CommandUUID)
+		dc.Commands = a
+		if x == nil { // must've already bin ackd
+			break
+		}
+		dc.Failed = append(dc.Failed, *x)
+
+	case "CommandFormatError":
+		// move to failed
+		x, a := cut(dc.Commands, resp.CommandUUID)
+		dc.Commands = a
+		if x == nil {
+			break
+		}
+		dc.Failed = append(dc.Failed, *x)
+
+	case "Idle":
+		// will send next command below
+
+	default:
+		return nil, fmt.Errorf("unknown response status: %s", resp.Status)
+	}
+
+	// pop the first command from the queue and add it to the end.
+	// If the regular queue is empty, send a command that got
+	// refused with NotNow before.
+	cmd, dc.Commands = popFirst(dc.Commands)
+	if cmd != nil {
+		dc.Commands = append(dc.Commands, *cmd)
+	} else if resp.Status != "NotNow" {
+		cmd, dc.NotNow = popFirst(dc.NotNow)
+		if cmd != nil {
+			dc.Commands = append(dc.Commands, *cmd)
+		}
+	}
+
+	if err := db.Save(dc); err != nil {
+		return nil, err
+	}
+
+	return cmd, nil
+}
+
+func NewFireQueue(db *firestore.Client, pubsub pubsub.PublishSubscriber) (*FireDB, error) {
+
+	datastore := &FireDB{Client: db}
+	if err := datastore.pollCommands(pubsub); err != nil {
+		return nil, err
+	}
+	return datastore, nil
+}
+
+func (db *FireDB) Save(cmd *DeviceCommand) error {
+
+	ctx := context.Background()
+
+	_, err := db.Collection(DeviceCommandBucket).Doc(cmd.DeviceUDID).Set(ctx, cmd)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *FireDB) DeviceCommand(udid string) (*DeviceCommand, error) {
+
+	var dev DeviceCommand
+
+	ctx := context.Background()
+
+	doc, err := db.Collection(DeviceCommandBucket).Doc(udid).Get(ctx)
+	if err != nil {
+		return nil, &notFound{"Profile","Not found"}
+	}
+
+	err = doc.DataTo(&dev)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dev, nil
+}
+
+func (db *FireDB) pollCommands(pubsub pubsub.PublishSubscriber) error {
+	commandEvents, err := pubsub.Subscribe(context.TODO(), "command-queue", command.CommandTopic)
+	if err != nil {
+		return errors.Wrapf(err,
+			"subscribing push to %s topic", command.CommandTopic)
+	}
+	go func() {
+		for {
+			select {
+			case event := <-commandEvents:
+				var ev command.Event
+				if err := command.UnmarshalEvent(event.Message, &ev); err != nil {
+					fmt.Println(err)
+					continue
+				}
+
+				cmd := new(DeviceCommand)
+				cmd.DeviceUDID = ev.DeviceUDID
+				byUDID, err := db.DeviceCommand(ev.DeviceUDID)
+				if err == nil && byUDID != nil {
+					cmd = byUDID
+				}
+				newPayload, err := plist.Marshal(ev.Payload)
+				if err != nil {
+					fmt.Println(errors.Wrap(err, "marshal event payload"))
+					continue
+				}
+				newCmd := Command{
+					UUID:    ev.Payload.CommandUUID,
+					Payload: newPayload,
+				}
+				cmd.Commands = append(cmd.Commands, newCmd)
+				if err := db.Save(cmd); err != nil {
+					fmt.Println(err)
+					continue
+				}
+				fmt.Printf("queued event for device: %s\n", ev.DeviceUDID)
+
+				cq := new(QueueCommandQueued)
+				cq.DeviceUDID = ev.DeviceUDID
+				cq.CommandUUID = ev.Payload.CommandUUID
+
+				msgBytes, err := MarshalQueuedCommand(cq)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+
+				pubsub.Publish(context.TODO(), CommandQueuedTopic, msgBytes)
+			}
+		}
+	}()
+
+	return nil
+}
+
+
+//////////////////////////////////////////////////////
 
 type Store struct {
 	*bolt.DB
